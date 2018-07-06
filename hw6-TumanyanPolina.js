@@ -108,15 +108,26 @@ class Monster extends Character {
 }
 
 class Tournament {
-    constructor(n, ...characters) {
-        this.chatacters = [...characters];
-        this.n
+    constructor(n, characters) { //передаем количество участников и самих участников
+        this.verifyQuantity(n, characters);
+        this.n = n;
+    }
+    verifyQuantity(n, characters) {
+        if (characters.length <= n) {
+            this.chatacters = characters;
+        } else
+            throw new Error('Error!!!Too many participants registered!!! ');
+    }
+    start() {
+        battle() {
+
+        }
     }
 }
 
+
+
+
 let monster1 = new Monster(Monster.TYPE_ORCS);
 let hero1 = new Hero(Hero.TYPE_THIEF);
-
-//создать массив из чарактеров и записать его в переменную
-проверить что длина меньше или = чем н
-если нет ошибка есди да - записать чаракеров в зыс чарактерс
+let characters = [monster1, hero1]
