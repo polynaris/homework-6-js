@@ -1,5 +1,5 @@
 class Character {
-    costructor(life, damage) {
+    constructor(life, damage) {
         this.life = life;
         this.damage = damage;
         this.maxLife = life;
@@ -16,26 +16,29 @@ class Character {
     heal() {
         this.life = this.maxLife;
     }
-    takeDamage(damage) { //нанести урон
-        if (typeof this === 'Hero') {
+    takeDamage(damage) {
+        if (this instanceof Hero) {
             if (this.shouldUseSkill() && !this.usedPotion) {
-                this.life -= 0; //неуязвим
+                this.life -= 0;
             } else this.life -= damage;
         }
-        if (typeof this === 'Monster') {
+        if (this instanceof Monster) {
             if (this.shouldUseSkill() && this.usedPotion) {
                 this.life -= 0;
             } else this.life -= damage;
         }
     }
-    attack(otherCharacter) { //передаем того, кого атакуем
+    attack(otherCharacter) {
         otherCharacter.takeDamage(this.damage);
     }
     isAlive() {
         return this.life > 0;
     }
     get life() {
-        return this.life;
+        return this._life;
+    }
+    set life(life) {
+        this._life = life;
     }
     shouldUseSkill() {
         if (this.life < this.maxLife / 2 && this.counter > 0 && this.usedSuperSkill === false) {
@@ -48,16 +51,19 @@ class Character {
         return false;
     }
     get damage() {
-        if (typeof this === 'Hero') {
+        if (this instanceof Hero) {
             if (this.shouldUseSkill() && this.usedPotion) {
-                return 2 * this.damage;
-            } else return this.damage;
+                return 2 * this._damage;
+            } else return this._damage;
         }
-        if (typeof this === 'Monster') {
+        if (this instanceof Monster) {
             if (this.shouldUseSkill() && !this.usedPotion) {
-                return 2 * this.damage;
-            } else return this.damage;
+                return 2 * this._damage;
+            } else return this._damage;
         }
+    }
+    set damage(damage) {
+        this._damage = damage;
     }
 }
 
@@ -104,7 +110,6 @@ Monster.TYPE_ORCS = 'orks';
 Monster.TYPE_VAMPIRE = 'vampire';
 Monster.NAME = ['Polina', 'Anna', 'Olga', 'Galina', 'Kompany', 'Mumu', 'Ququsha'];
 
-
 Hero.TYPE_LIFE_MAP = new Map([
     [Hero.TYPE_THIEF, 200],
     [Hero.TYPE_WARS, 250],
@@ -123,11 +128,11 @@ Monster.TYPE_LIFE_MAP = new Map([
 Monster.TYPE_DAMAGE_MAP = new Map([
     [Monster.TYPE_GOBLIN, 55],
     [Monster.TYPE_ORCS, 15],
-    [Monster.TYPE_VAMPIRE, 80]
+    [Monster.TYPE_VAMPIRE, 70]
 ]);
 
 class Tournament {
-    constructor(n, characters) { //передаем количество участников и самих участников 
+    constructor(n, characters) {
         this.verifyQuantity(n, characters);
         this.n = n;
     }
@@ -138,9 +143,13 @@ class Tournament {
             throw new Error('Error!!!Too many participants registered!!! ');
     }
     start() {
-        return this.battle(this.chatacters);
+        let winnerOfTournament = this.battle(this.chatacters);
+        if (winnerOfTournament === null) {
+            console.log(`There is no winner! Everybody died`);
+        } else {
+            console.log(`Winner is ${winnerOfTournament.name}`);
+        }
     }
-
     battle(characters) {
         if (characters.length > 2) {
             const char1 = this.battle(characters.slice(0, characters.length / 2));
@@ -152,7 +161,6 @@ class Tournament {
             return characters[0];
         }
     }
-
     fight(char1, char2) {
         if (char1 === null) {
             if (char2 === null) {
@@ -163,21 +171,21 @@ class Tournament {
         if (char2 === null) {
             return char1;
         }
-        while (char1.isAlive && char2.isAlive) {
+        while (char1.isAlive() && char2.isAlive()) {
             char1.attack(char2);
-            console.log(`${char1.name} inflicted damage ${char2.name}${char1.damage}! ${char2.name} has ${char2.life} lives left`);
             char2.attack(char1);
-            console.log(`${char2.name} inflicted damage ${char1.name}${char2.damage}! ${char1.name} has ${char1.life} lives left`);
         }
         let winner;
         if (char1.isAlive()) {
             winner = char1;
             char1.life = char1.maxLife;
-        }
-        if (char2.isAlive()) {
+            console.log(`${char1.name} won ${char2.name}`);
+        } else if (char2.isAlive()) {
             winner = char2;
             char2.life = char2.maxLife;
+            console.log(`${char2.name} won ${char1.name}`)
         } else {
+            console.log(`${char1.name} drew with ${char2.name}. Both are DEAD`)
             return null;
         }
         return winner;
@@ -187,7 +195,9 @@ class Tournament {
 let tourney = new Tournament(3, [
     new Hero(Hero.TYPE_THIEF, 'Leonid'),
     new Hero(Hero.TYPE_WIZARD, 'Naymar'),
-    new Hero(Hero.TYPE_WARS, 'Guldan')
+    new Hero(Hero.TYPE_WARS, 'Guldan'),
+    new Monster(Monster.TYPE_ORCS, 'Olga'),
+    new Monster(Monster.TYPE_VAMPIRE, 'Polina'),
 ]);
 
-console.log(tourney.start());
+tourney.start();
