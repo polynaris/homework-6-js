@@ -74,8 +74,7 @@ class Hero extends Character {
         }
     }
     checkName(name) {
-        if (Hero.NAME.includes(name));
-        else return false;
+        return Hero.NAME.includes(name);
     }
 }
 
@@ -92,8 +91,7 @@ class Monster extends Character {
         }
     }
     checkName(name) {
-        if (Monster.NAME.includes(name));
-        else return false;
+        return Monster.NAME.includes(name);
     }
 }
 
@@ -167,16 +165,16 @@ class Tournament {
         }
         while (char1.isAlive && char2.isAlive) {
             char1.attack(char2);
-            console.log(`${char1.name} take damage ${char2.name}${char1.damage}! ${char2.name} has ${char2.life} lives left`);
+            console.log(`${char1.name} inflicted damage ${char2.name}${char1.damage}! ${char2.name} has ${char2.life} lives left`);
             char2.attack(char1);
-            console.log(`${char2.name} take damage ${char1.name}${char2.damage}! ${char1.name} has ${char1.life} lives left`);
+            console.log(`${char2.name} inflicted damage ${char1.name}${char2.damage}! ${char1.name} has ${char1.life} lives left`);
         }
         let winner;
-        if (char1.isAlive) {
+        if (char1.isAlive()) {
             winner = char1;
             char1.life = char1.maxLife;
         }
-        if (char2.isAlive) {
+        if (char2.isAlive()) {
             winner = char2;
             char2.life = char2.maxLife;
         } else {
