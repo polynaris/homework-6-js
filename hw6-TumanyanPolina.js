@@ -1,11 +1,16 @@
 class Character {
-    constructor(life, damage) {
+    constructor(life, damage, name) {
         this.life = life;
         this.damage = damage;
         this.maxLife = life;
         this.counter = 2;
         this.usedPotion = false;
         this.usedSuperSkill = false;
+        if (this.checkName(name)) {
+            this.name = name;
+        } else {
+            throw new Error('This name not found! :(');
+        }
     }
     superSkill() {
         this.usedSuperSkill = true;
@@ -71,13 +76,8 @@ class Hero extends Character {
     constructor(type, name) {
         const life = Hero.TYPE_LIFE_MAP.get(type);
         const damage = Hero.TYPE_DAMAGE_MAP.get(type);
-        super(life, damage);
+        super(life, damage, name);
         this.type = type;
-        if (this.checkName(name)) {
-            this.name = name;
-        } else {
-            throw new Error('This name not found! :(');
-        }
     }
     checkName(name) {
         return Hero.NAME.includes(name);
@@ -88,13 +88,8 @@ class Monster extends Character {
     constructor(type, name) {
         const life = Monster.TYPE_LIFE_MAP.get(type);
         const damage = Monster.TYPE_DAMAGE_MAP.get(type);
-        super(life, damage);
+        super(life, damage, name);
         this.type = type;
-        if (this.checkName(name)) {
-            this.name = name;
-        } else {
-            throw new Error('This name not found! :(');
-        }
     }
     checkName(name) {
         return Monster.NAME.includes(name);
@@ -192,7 +187,7 @@ class Tournament {
     }
 }
 
-let tourney = new Tournament(3, [
+let tourney = new Tournament(5, [
     new Hero(Hero.TYPE_THIEF, 'Leonid'),
     new Hero(Hero.TYPE_WIZARD, 'Naymar'),
     new Hero(Hero.TYPE_WARS, 'Guldan'),
