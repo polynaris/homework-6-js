@@ -187,12 +187,15 @@ class Tournament {
     }
 }
 
-let tourney = new Tournament(5, [
+let arrayOfCharacters = [
     new Hero(Hero.TYPE_THIEF, 'Leonid'),
     new Hero(Hero.TYPE_WIZARD, 'Naymar'),
     new Hero(Hero.TYPE_WARS, 'Guldan'),
     new Monster(Monster.TYPE_ORCS, 'Olga'),
     new Monster(Monster.TYPE_VAMPIRE, 'Polina'),
-]);
+];
+let tourney = new Tournament(5, arrayOfCharacters);
+
+arrayOfCharacters[0].takePotion();
 
 tourney.start();
